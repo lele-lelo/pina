@@ -1,1 +1,31 @@
-// app global css
+$appli-colors: (
+  "red": $red,
+  "pink": $pink,
+  "purple": $purple,
+  "deep-purple": $deep-purple,
+  "indigo": $indigo,
+  "light-blue": $light-blue,
+  "cyan": $cyan,
+  "blue": $blue,
+  "teal": $teal,
+  "green": $green,
+  "light-green": $light-green,
+  "lime": $lime,
+  "yellow": $yellow,
+  "amber": $amber,
+  "orange": $orange,
+  "deep-orange": $deep-orange,
+  "brown": $brown,
+  "grey": $grey,
+  "blue-grey": $blue-grey
+);
+
+@each $name, $color in $appli-colors {
+  .text-#{$name} {
+    color: $color !important;
+  }
+  .bg-#{$name} {
+    background: rgba($color, 0.13) !important;
+    color: $color !important;
+  }
+}
