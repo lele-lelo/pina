@@ -1,4 +1,4 @@
-import { BrowserWindow, app } from "electron";
+import { BrowserWindow, Menu, app, ipcMain } from "electron";
 import path from "node:path";
 import os from "node:os";
 import {
@@ -15,9 +15,8 @@ async function createWindow() {
    */
   const mainWindow = new BrowserWindow({
     icon: resolveElectronAssetsPath("icons/icon.png"), // linux
-    width: 1000,
-    height: 600,
     useContentSize: true,
+    frame: false,
     webPreferences: {
       contextIsolation: true,
       // https://v2.quasar.dev/quasar-cli-vite/developing-electron-apps/electron-preload-script
@@ -33,13 +32,43 @@ async function createWindow() {
 
   if (import.meta.env.QUASAR_DEBUG) {
     // if on DEV or Production with debug enabled
-    mainWindow.webContents.openDevTools();
+    // mainWindow.webContents.openDevTools();
   } else {
     // we're on production; no access to devtools pls
     mainWindow.webContents.on("devtools-opened", () => {
       mainWindow?.webContents.closeDevTools();
     });
   }
+
+  Menu.setApplicationMenu(null);
+  // Pour un menu custom
+  // const menuTabs: MenuItemConstructorOptions[] = [
+  //   {
+  //     label: "Fichier",
+  //     submenu: [{ label: "Quitter", click: () => app.quit() }]
+  //   }
+  // ];
+
+  // const menu = Menu.buildFromTemplate(menuTabs);
+  // Menu.setApplicationMenu(menu);
+
+  // Events handlers
+  ipcMain.on("window-minimize", () => mainWindow?.minimize());
+  ipcMain.on("window-maximize", () => {
+    if (mainWindow?.isMaximized()) {
+      mainWindow.unmaximize();
+    } else {
+      mainWindow?.maximize();
+    }
+  });
+  ipcMain.on("window-close", () => mainWindow?.close());
+  ipcMain.on("window-fullscreen", () => {
+    if (mainWindow.isFullScreen()) {
+      mainWindow.setFullScreen(false);
+    } else {
+      mainWindow.setFullScreen(true);
+    }
+  });
 }
 
 void app.whenReady().then(async () => {
