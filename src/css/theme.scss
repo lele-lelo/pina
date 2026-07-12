@@ -1,0 +1,65 @@
+$appli-colors: (
+  "aqua": (
+    light: #5c5c8a,
+    dark: #efdef8 // léger lissage, optionnel
+  ),
+  "black": (
+    light: #4f4a78,
+    dark: #63558f
+  ),
+  "blue": (
+    light: #63b1ff,
+    dark: #78c4ff
+  ),
+  "green": (
+    light: #77bd28,
+    dark: #acd942
+  ),
+  "orange": (
+    light: #ff9b44,
+    dark: #ffc144
+  ),
+  "pink": (
+    light: #ff7c99,
+    dark: #ffa1af
+  ),
+  "purple": (
+    light: #bd90ea,
+    dark: #d9aaf2
+  ),
+  "red": (
+    light: #e80448,
+    dark: #fc4969
+  ),
+  "white": (
+    light: #217199,
+    dark: #aafbea
+  ),
+  "yellow": (
+    light: #ffce3a,
+    dark: #ffe45a
+  )
+);
+
+@each $name, $color in $appli-colors {
+  $appli-theme: (
+    "light": map-get($color, light),
+    "dark": map-get($color, dark)
+  );
+
+  @each $themeName, $theme in $appli-theme {
+    .body--#{$themeName}.body--theme-#{$name} {
+      .bg-content {
+        background: rgba($theme, 0.03);
+        color: $theme;
+      }
+      .text-primary {
+        color: $theme !important;
+      }
+      .bg-primary {
+        background: rgba($theme, 0.13) !important;
+        color: $theme !important;
+      }
+    }
+  }
+}

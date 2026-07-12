@@ -7,7 +7,7 @@ import TitleBar from "@/components/general/title-bar.vue";
     <title-bar />
 
     <q-page-container>
-      <router-view />
+      <router-view class="bg-content" />
     </q-page-container>
   </q-layout>
 </template>

@@ -5,9 +5,15 @@ import {
   registerQuasarRuntime,
   resolveElectronAssetsPath
 } from "#q-app/electron/main";
+import { store } from "./electron-store";
 
 // needed in case process is undefined under Linux
 const platform = process.platform || os.platform();
+
+ipcMain.handle("config-get", (_, key: string) => store.get(key));
+ipcMain.handle("config-set", (_, key: string, value: unknown) => {
+  store.set(key, value);
+});
 
 async function createWindow() {
   /**
@@ -16,6 +22,8 @@ async function createWindow() {
   const mainWindow = new BrowserWindow({
     icon: resolveElectronAssetsPath("icons/icon.png"), // linux
     useContentSize: true,
+    minWidth: 300,
+    minHeight: 300,
     frame: false,
     webPreferences: {
       contextIsolation: true,
@@ -41,16 +49,6 @@ async function createWindow() {
   }
 
   Menu.setApplicationMenu(null);
-  // Pour un menu custom
-  // const menuTabs: MenuItemConstructorOptions[] = [
-  //   {
-  //     label: "Fichier",
-  //     submenu: [{ label: "Quitter", click: () => app.quit() }]
-  //   }
-  // ];
-
-  // const menu = Menu.buildFromTemplate(menuTabs);
-  // Menu.setApplicationMenu(menu);
 
   // Events handlers
   ipcMain.on("window-minimize", () => mainWindow?.minimize());
