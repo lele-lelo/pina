@@ -50,7 +50,7 @@ $appli-colors: (
   @each $themeName, $theme in $appli-theme {
     .body--#{$themeName}.body--theme-#{$name} {
       .bg-content {
-        background: rgba($theme, 0.03);
+        background: rgba($theme, 0.02);
         color: $theme;
       }
       .text-primary {
