@@ -1,3 +1,9 @@
+export type TOption<T> = {
+  value: T;
+  label: string;
+  icon?: string;
+};
+
 export type TThemeColor =
   | "aqua"
   | "black"
@@ -10,9 +16,4 @@ export type TThemeColor =
   | "white"
   | "yellow";
 
-export type TThemeColorOption = {
-  value: TThemeColor;
-  label: string;
-  default?: boolean;
-  showFn?: () => boolean;
-};
+export type TTheme = "light" | "dark" | "auto";

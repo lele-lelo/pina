@@ -1,11 +1,6 @@
 <script setup lang="ts">
-import { useUserStore } from "@/stores/user-store";
-import { TThemeColor } from "@/types/settings";
-import { THEME_COLOR_OPTIONS } from "@/utils/constants/settings";
 import { onMounted, onUnmounted } from "vue";
-
-// Composables
-const userStore = useUserStore();
+import AppIcon from "./app-icon.vue";
 
 // Functions
 function minimize() {
@@ -40,10 +35,7 @@ onUnmounted(() => {
 <template>
   <q-header class="titlebar bg-primary column no-wrap">
     <q-bar class="col transparent">
-      <q-icon
-        class="pixel-art"
-        :name="`img:/icons/${userStore.themeColor} pineapple.png`"
-      />
+      <app-icon />
 
       <div>Pina</div>
       <q-space />

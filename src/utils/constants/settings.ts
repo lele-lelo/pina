@@ -1,17 +1,31 @@
-import { TThemeColorOption } from "@/types/settings";
-import { Dark } from "quasar";
+import { TOption, TTheme, TThemeColor } from "@/types/settings";
 
-export const THEME_COLOR_OPTIONS: TThemeColorOption[] = [
+export const THEME_OPTIONS: TOption<TTheme>[] = [
+  {
+    value: "auto",
+    label: "Système",
+    icon: "mdi-theme-light-dark"
+  },
+  {
+    value: "light",
+    label: "Clair",
+    icon: "mdi-weather-sunny"
+  },
+  {
+    value: "dark",
+    label: "Sombre",
+    icon: "mdi-weather-night"
+  }
+];
+
+export const THEME_COLOR_OPTIONS: TOption<TThemeColor>[] = [
   {
     value: "aqua",
     label: "Bleu ciel"
   },
   {
     value: "black",
-    label: "Noir",
-    showFn() {
-      return !Dark.isActive || true;
-    }
+    label: "Noir"
   },
   {
     value: "blue",
@@ -39,14 +53,10 @@ export const THEME_COLOR_OPTIONS: TThemeColorOption[] = [
   },
   {
     value: "white",
-    label: "Blanc",
-    showFn() {
-      return Dark.isActive || true;
-    }
+    label: "Blanc"
   },
   {
     value: "yellow",
-    label: "Jaune",
-    default: true
+    label: "Jaune"
   }
 ];
