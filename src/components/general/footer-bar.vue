@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { Dark } from "quasar";
-import { computed, ref } from "vue";
+import { Dialog } from "quasar";
+import { computed } from "vue";
+import SettingsDialog from "../settings/settings-dialog.vue";
 
 // Types
 type TNavigationOption = {
@@ -24,11 +25,6 @@ const navigationOptions = computed<TNavigationOption[]>(() => {
       color: "green"
     },
     {
-      label: "Emulation",
-      icon: "mdi-gamepad-square",
-      color: Dark.isActive ? "yellow" : "pink"
-    },
-    {
       label: "Multijoueurs",
       icon: "mdi-account-group",
       color: "orange"
@@ -36,7 +32,12 @@ const navigationOptions = computed<TNavigationOption[]>(() => {
     {
       label: "Paramètres",
       icon: "mdi-cog",
-      color: "grey"
+      color: "grey",
+      clickFn() {
+        Dialog.create({
+          component: SettingsDialog
+        });
+      }
     },
     {
       label: "Système",

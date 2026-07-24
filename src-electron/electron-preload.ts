@@ -36,3 +36,9 @@ contextBridge.exposeInMainWorld("windowControls", {
   close: () => ipcRenderer.send("window-close"),
   fullscreen: () => ipcRenderer.send("window-fullscreen")
 });
+
+contextBridge.exposeInMainWorld("appConfig", {
+  get: (key: string) => ipcRenderer.invoke("config-get", key),
+  set: (key: string, value: unknown) =>
+    ipcRenderer.invoke("config-set", key, value)
+});

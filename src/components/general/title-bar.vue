@@ -63,10 +63,4 @@ onUnmounted(() => {
 .titlebar button {
   -webkit-app-region: no-drag;
 }
-
-.pixel-art {
-  image-rendering: crisp-edges;
-  height: 32px;
-  width: auto;
-}
 </style>

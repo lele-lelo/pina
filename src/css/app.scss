@@ -29,3 +29,9 @@ $appli-colors: (
     color: $color !important;
   }
 }
+
+.pixel-art {
+  image-rendering: crisp-edges;
+  height: 32px;
+  width: auto;
+}

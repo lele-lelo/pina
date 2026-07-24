@@ -13,6 +13,7 @@ const platform = process.platform || os.platform();
 ipcMain.handle("config-get", (_, key: string) => store.get(key));
 ipcMain.handle("config-set", (_, key: string, value: unknown) => {
   store.set(key, value);
+  return true;
 });
 
 async function createWindow() {

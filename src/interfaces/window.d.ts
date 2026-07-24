@@ -8,5 +8,9 @@ declare global {
       close: () => void;
       fullscreen: () => void;
     };
+    appConfig: {
+      get: <T>(key: string) => Promise<T>;
+      set: (key: string, value: unknown) => Promise<boolean>;
+    };
   }
 }
