@@ -17,7 +17,11 @@ const navigationOptions = computed<TNavigationOption[]>(() => {
     {
       label: "Charger une ROM",
       icon: "mdi-upload",
-      color: "blue"
+      color: "blue",
+      async clickFn() {
+        const res = await window.romActions.addFile();
+        console.log(res);
+      }
     },
     {
       label: "Ajouter un répertoire",

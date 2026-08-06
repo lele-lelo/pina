@@ -1,3 +1,4 @@
+import { TGameMetadata, TRomEntry } from "@/types/rom";
 import type { TTheme, TThemeColor } from "@/types/settings";
 import Store from "electron-store";
 
@@ -6,6 +7,10 @@ export interface IStoreConfig {
     theme: TTheme;
     colorTheme: TThemeColor;
   };
+  library: {
+    entries: TRomEntry[];
+    gameMetadata: TGameMetadata[];
+  };
 }
 
 export const store = new Store<IStoreConfig>({
@@ -13,6 +18,10 @@ export const store = new Store<IStoreConfig>({
     general: {
       theme: "auto",
       colorTheme: "yellow"
+    },
+    library: {
+      entries: [],
+      gameMetadata: []
     }
   }
 });

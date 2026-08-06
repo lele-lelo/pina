@@ -1,26 +1,104 @@
-import { BrowserWindow, Menu, app, ipcMain } from "electron";
-import path from "node:path";
+import { BrowserWindow, Menu, app, dialog, ipcMain } from "electron";
+import path, { basename, extname } from "node:path";
 import os from "node:os";
 import {
   registerQuasarRuntime,
   resolveElectronAssetsPath
 } from "#q-app/electron/main";
 import { store } from "./electron-store";
+import { computeRomId } from "./rom/rom-id";
+import { TGameMetadata, TRomEntry } from "@/types/rom";
+import { lookupGbaByCrc } from "./rom/dat-lookup";
+import { randomUUID } from "node:crypto";
 
 // needed in case process is undefined under Linux
 const platform = process.platform || os.platform();
 
+let mainWindow: BrowserWindow | undefined;
+
+// Window
+ipcMain.on("window-minimize", () => mainWindow?.minimize());
+ipcMain.on("window-maximize", () => {
+  if (mainWindow?.isMaximized()) {
+    mainWindow.unmaximize();
+  } else {
+    mainWindow?.maximize();
+  }
+});
+ipcMain.on("window-close", () => mainWindow?.close());
+ipcMain.on("window-fullscreen", () => {
+  if (mainWindow!.isFullScreen()) {
+    mainWindow!.setFullScreen(false);
+  } else {
+    mainWindow!.setFullScreen(true);
+  }
+});
+
+// Config
 ipcMain.handle("config-get", (_, key: string) => store.get(key));
 ipcMain.handle("config-set", (_, key: string, value: unknown) => {
   store.set(key, value);
   return true;
 });
 
+// Roms
+ipcMain.handle("rom-add-file", async () => {
+  const result = await dialog.showOpenDialog(mainWindow!, {
+    title: "Sélectionner une ROM",
+    properties: ["openFile"],
+    filters: [{ name: "ROM Game Boy Advance", extensions: ["gba"] }]
+  });
+
+  if (result.canceled || result.filePaths.length === 0) {
+    return null;
+  }
+
+  const filePath = result.filePaths[0]!;
+  const gameId = computeRomId(filePath);
+
+  const entries = store.get("library.entries", []) as TRomEntry[];
+
+  const existingSamePath = entries.find(e => e.path === filePath);
+  if (existingSamePath) {
+    return lookupGbaByCrc(gameId);
+  }
+
+  const allMetadata = store.get("library.gameMetadata", []) as TGameMetadata[];
+  let metadata = allMetadata.find(m => m.gameId === gameId);
+  if (!metadata) {
+    const datEntry = lookupGbaByCrc(gameId);
+
+    console.log("datEntry : ", datEntry);
+
+    if (datEntry) {
+      metadata = {
+        gameId,
+        name: datEntry?.name,
+        console: "gba",
+        region: datEntry?.region
+      };
+
+      store.set("library.gameMetadata", [...allMetadata, metadata]);
+    }
+  }
+
+  const newEntry: TRomEntry = {
+    entryId: randomUUID(),
+    gameId: gameId,
+    path: filePath,
+    name: basename(filePath, extname(filePath))
+  };
+
+  store.set("library.entries", [...entries, newEntry]);
+
+  return lookupGbaByCrc(gameId);
+});
+
 async function createWindow() {
   /**
    * Initial window options
    */
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     icon: resolveElectronAssetsPath("icons/icon.png"), // linux
     useContentSize: true,
     minWidth: 300,
@@ -50,24 +128,6 @@ async function createWindow() {
   }
 
   Menu.setApplicationMenu(null);
-
-  // Events handlers
-  ipcMain.on("window-minimize", () => mainWindow?.minimize());
-  ipcMain.on("window-maximize", () => {
-    if (mainWindow?.isMaximized()) {
-      mainWindow.unmaximize();
-    } else {
-      mainWindow?.maximize();
-    }
-  });
-  ipcMain.on("window-close", () => mainWindow?.close());
-  ipcMain.on("window-fullscreen", () => {
-    if (mainWindow.isFullScreen()) {
-      mainWindow.setFullScreen(false);
-    } else {
-      mainWindow.setFullScreen(true);
-    }
-  });
 }
 
 void app.whenReady().then(async () => {

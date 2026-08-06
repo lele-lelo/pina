@@ -42,3 +42,7 @@ contextBridge.exposeInMainWorld("appConfig", {
   set: (key: string, value: unknown) =>
     ipcRenderer.invoke("config-set", key, value)
 });
+
+contextBridge.exposeInMainWorld("romActions", {
+  addFile: () => ipcRenderer.invoke("rom-add-file")
+});

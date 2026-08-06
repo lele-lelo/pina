@@ -12,5 +12,8 @@ declare global {
       get: <T>(key: string) => Promise<T>;
       set: (key: string, value: unknown) => Promise<boolean>;
     };
+    romActions: {
+      addFile: () => Promise<void>;
+    };
   }
 }
