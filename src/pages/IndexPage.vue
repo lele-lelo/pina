@@ -1,18 +1,15 @@
 <script setup lang="ts">
+import RomButton from "@/components/rom/rom-button.vue";
 import { useUserStore } from "@/stores/user-store";
-import { romHelper } from "@/utils/helpers/romHelper";
 
 // Composables
 const userStore = useUserStore();
 </script>
 
 <template>
-  <q-page class="flex flex-center">
-    <div class="column items-center">
-      <pre v-for="(rom, i) in userStore.roms" :key="i">{{ rom }}
-        <pre>{{ romHelper.getCoverUrl(rom.gameId)}}</pre>
-        <q-img :src="romHelper.getCoverUrl(rom.gameId)" />
-      </pre>
-    </div>
+  <q-page class="flex q-pa-sm">
+    <q-list class="col">
+      <rom-button v-for="(rom, i) in userStore.roms" :key="i" :rom="rom" />
+    </q-list>
   </q-page>
 </template>

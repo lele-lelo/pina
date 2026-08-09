@@ -33,9 +33,6 @@ function buildThumbnailUrl(
   const sanitized = sanitizeForLibretroThumbnails(officialName);
   const encoded = encodeURIComponent(sanitized);
 
-  console.log(
-    `https://raw.githubusercontent.com/libretro-thumbnails/${repo}/master/Named_Boxarts/${encoded}.png`
-  );
   return `https://raw.githubusercontent.com/libretro-thumbnails/${repo}/master/Named_Boxarts/${encoded}.png`;
 }
 
