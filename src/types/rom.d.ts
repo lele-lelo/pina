@@ -9,7 +9,7 @@ export type TGameMetadata = {
   gameId: string;
   name: string;
   console: string;
-  coverPath?: string;
+  hasCover: boolean;
   region?: string | undefined;
   description?: string;
   genre?: string;

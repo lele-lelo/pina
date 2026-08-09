@@ -1,4 +1,12 @@
-import { BrowserWindow, Menu, app, dialog, ipcMain } from "electron";
+import {
+  BrowserWindow,
+  Menu,
+  app,
+  dialog,
+  ipcMain,
+  net,
+  protocol
+} from "electron";
 import path, { basename, extname } from "node:path";
 import os from "node:os";
 import {
@@ -10,6 +18,8 @@ import { computeRomId } from "./rom/rom-id";
 import { TGameMetadata, TRomEntry } from "@/types/rom";
 import { lookupGbaByCrc } from "./rom/dat-lookup";
 import { randomUUID } from "node:crypto";
+import { downloadCover } from "./rom/cover-fetcher";
+import { pathToFileURL } from "node:url";
 
 // needed in case process is undefined under Linux
 const platform = process.platform || os.platform();
@@ -68,14 +78,15 @@ ipcMain.handle("rom-add-file", async () => {
   if (!metadata) {
     const datEntry = lookupGbaByCrc(gameId);
 
-    console.log("datEntry : ", datEntry);
+    const coverPath = await downloadCover(gameId, "gba", datEntry?.name ?? "");
 
     if (datEntry) {
       metadata = {
         gameId,
         name: datEntry?.name,
         console: "gba",
-        region: datEntry?.region
+        region: datEntry?.region,
+        hasCover: !!coverPath
       };
 
       store.set("library.gameMetadata", [...allMetadata, metadata]);
@@ -130,7 +141,29 @@ async function createWindow() {
   Menu.setApplicationMenu(null);
 }
 
+// Protocoles pour le transfert de cover
+protocol.registerSchemesAsPrivileged([
+  {
+    scheme: "app-cover",
+    privileges: {
+      standard: true,
+      secure: true,
+      supportFetchAPI: true,
+      corsEnabled: true
+    }
+  }
+]);
+
 void app.whenReady().then(async () => {
+  protocol.handle("app-cover", request => {
+    const url = new URL(request.url);
+    const fileName = url.hostname.replace("app-cover://", "");
+    const coversDir = path.join(app.getPath("userData"), "covers");
+    const filePath = path.join(coversDir, fileName);
+
+    return net.fetch(pathToFileURL(filePath).toString());
+  });
+
   await registerQuasarRuntime();
 
   void createWindow();

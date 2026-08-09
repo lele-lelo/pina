@@ -14,37 +14,39 @@ export function parseDat(filePath: string): TDatEntry[] {
   const content = readFileSync(filePath, "utf-8");
   const entries: TDatEntry[] = [];
 
-  const romRegex = /rom \((.*)\)/g;
-  let match: RegExpExecArray | null;
+  const gameRegex = /game \(([\s\S]*?)\n\)/g;
+  let gameMatch: RegExpExecArray | null;
 
-  while ((match = romRegex.exec(content)) !== null) {
-    const block = match[1];
+  while ((gameMatch = gameRegex.exec(content)) !== null) {
+    const gameBlock = gameMatch[1];
 
-    if (block) {
-      const name = block.match(/name\s+"([^"]+)"/)?.[1];
-      const region = block.match(/region\s+"([^"]+)"/)?.[1];
-      const size = block.match(/size\s+(\d+)/)?.[1];
-      const crc = block.match(/crc\s+([0-9A-Fa-f]+)/)?.[1];
-      const md5 = block.match(/md5\s+([0-9A-Fa-f]+)/)?.[1];
-      const sha1 = block.match(/sha1\s+([0-9A-Fa-f]+)/)?.[1];
-      const serial = block.match(/serial\s+"([^"]*)"/)?.[1];
+    const gameName = gameBlock?.match(/^\s*name\s+"([^"]+)"/m)?.[1];
+    const region = gameBlock?.match(/^\s*region\s+"([^"]*)"/m)?.[1];
 
-      if (name && size && crc) {
+    const romLineMatch = gameBlock?.match(/rom \((.*)\)/);
+
+    if (romLineMatch) {
+      const romBlock = romLineMatch[1];
+
+      const size = romBlock?.match(/size\s+(\d+)/)?.[1];
+      const crc = romBlock?.match(/crc\s+([0-9A-Fa-f]+)/)?.[1];
+      const md5 = romBlock?.match(/md5\s+([0-9A-Fa-f]+)/)?.[1];
+      const sha1 = romBlock?.match(/sha1\s+([0-9A-Fa-f]+)/)?.[1];
+      const serial = romBlock?.match(/serial\s+"([^"]*)"/)?.[1];
+
+      if (gameName && size && crc) {
         entries.push({
-          name,
-          region,
+          name: gameName,
           size: parseInt(size, 10),
           crc: crc.toLowerCase(),
           md5: md5?.toLowerCase() ?? "",
           sha1: sha1?.toLowerCase() ?? "",
-          serial: serial ?? ""
+          serial: serial ?? "",
+          region: region ?? ""
         });
       }
     }
   }
-
-  console.log(entries.length);
-  console.log(entries[0]);
 
   return entries;
 }
