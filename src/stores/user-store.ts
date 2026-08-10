@@ -1,4 +1,4 @@
-import { TRomEntry } from "@/types/rom";
+import { TGameMetadata, TRomEntry } from "@/types/rom";
 import { TTheme, type TThemeColor } from "@/types/settings";
 import { defineStore } from "pinia";
 import { Dark } from "quasar";
@@ -22,6 +22,8 @@ export const useUserStore = defineStore("user", () => {
    * @default []
    */
   const roms = ref<TRomEntry[]>([]);
+
+  const gameMetadatas = ref<TGameMetadata[]>([]);
 
   // Functions
   /** Fonctions qui met à jour le theme
@@ -60,7 +62,20 @@ export const useUserStore = defineStore("user", () => {
     // Roms
     roms.value =
       (await window.appConfig.get<TRomEntry[]>("library.entries")) || [];
+
+    // Metadata
+    gameMetadatas.value =
+      (await window.appConfig.get<TGameMetadata[]>("library.gameMetadata")) ||
+      [];
   }
 
-  return { theme, themeColor, roms, setTheme, setThemeColor, initStore };
+  return {
+    theme,
+    themeColor,
+    roms,
+    gameMetadatas,
+    setTheme,
+    setThemeColor,
+    initStore
+  };
 });
