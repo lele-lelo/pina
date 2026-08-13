@@ -10,6 +10,9 @@ const userStore = useUserStore();
 
 // Computeds
 const currentThemeOption = computed(() => {
+  if (userStore.isThemeColorRandom) {
+    return THEME_COLOR_OPTIONS.find(tco => tco.value === "random");
+  }
   return THEME_COLOR_OPTIONS.find(tco => tco.value === userStore.themeColor);
 });
 </script>
@@ -30,13 +33,15 @@ const currentThemeOption = computed(() => {
     "
   >
     <template #prepend>
-      <app-icon />
+      <q-icon v-if="currentThemeOption?.value === 'random'" name="help" />
+      <app-icon v-else />
     </template>
 
     <template #option="scope">
       <q-item v-bind="scope.itemProps" dense>
         <q-item-section side>
-          <app-icon :theme-color="scope.opt.value" />
+          <q-icon v-if="scope.opt.value === 'random'" name="help" />
+          <app-icon v-else :theme-color="scope.opt.value" />
         </q-item-section>
         <q-item-section>
           <q-item-label>{{ scope.opt.label }}</q-item-label>

@@ -14,6 +14,7 @@ export type TThemeColor =
   | "purple"
   | "red"
   | "white"
-  | "yellow";
+  | "yellow"
+  | "random";
 
 export type TTheme = "light" | "dark" | "auto";

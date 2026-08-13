@@ -58,5 +58,9 @@ export const THEME_COLOR_OPTIONS: TOption<TThemeColor>[] = [
   {
     value: "yellow",
     label: "Jaune"
+  },
+  {
+    value: "random",
+    label: "Aléatoire"
   }
 ];

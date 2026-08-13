@@ -1,5 +1,6 @@
 import { TGameMetadata, TRomEntry } from "@/types/rom";
 import { TTheme, type TThemeColor } from "@/types/settings";
+import { THEME_COLOR_OPTIONS } from "@/utils/constants/settings";
 import { defineStore } from "pinia";
 import { Dark } from "quasar";
 import { ref } from "vue";
@@ -17,6 +18,8 @@ export const useUserStore = defineStore("user", () => {
    * @example red, blue, yellow
    */
   const themeColor = ref<TThemeColor>("yellow");
+
+  const isThemeColorRandom = ref(false);
 
   /** Liste des roms
    * @default []
@@ -39,9 +42,21 @@ export const useUserStore = defineStore("user", () => {
    * @param newThemeColor Nouvelle couleur
    */
   async function setThemeColor(newThemeColor: TThemeColor) {
+    await window.appConfig.set("general.colorTheme", newThemeColor);
+    isThemeColorRandom.value = false;
+
+    if (newThemeColor === "random") {
+      const options = THEME_COLOR_OPTIONS.map(tco => tco.value).filter(
+        tco => tco !== "random"
+      );
+      newThemeColor = options[
+        Math.floor(Math.random() * options.length)
+      ] as TThemeColor;
+      isThemeColorRandom.value = true;
+    }
+
     document.body.classList.remove(`body--theme-${themeColor.value}`);
     themeColor.value = newThemeColor;
-    await window.appConfig.set("general.colorTheme", newThemeColor);
     document.body.classList.add(`body--theme-${themeColor.value}`);
   }
 
@@ -72,6 +87,7 @@ export const useUserStore = defineStore("user", () => {
   return {
     theme,
     themeColor,
+    isThemeColorRandom,
     roms,
     gameMetadatas,
     setTheme,
