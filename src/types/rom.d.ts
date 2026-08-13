@@ -11,7 +11,6 @@ export type TGameMetadata = {
   console: string;
   hasCover: boolean;
   region?: string | undefined;
-  description?: string;
-  genre?: string;
-  publisher?: string;
+  genre?: string | undefined;
+  publisher?: string | undefined;
 };

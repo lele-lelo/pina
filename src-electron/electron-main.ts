@@ -70,7 +70,7 @@ ipcMain.handle("rom-add-file", async () => {
 
   const existingSamePath = entries.find(e => e.path === filePath);
   if (existingSamePath) {
-    return lookupGbaByCrc(gameId);
+    return null;
   }
 
   const allMetadata = store.get("library.gameMetadata", []) as TGameMetadata[];
@@ -86,6 +86,8 @@ ipcMain.handle("rom-add-file", async () => {
         name: datEntry?.name,
         console: "gba",
         region: datEntry?.region,
+        genre: datEntry?.genre,
+        publisher: datEntry?.publisher,
         hasCover: !!coverPath
       };
 
@@ -102,7 +104,7 @@ ipcMain.handle("rom-add-file", async () => {
 
   store.set("library.entries", [...entries, newEntry]);
 
-  return lookupGbaByCrc(gameId);
+  return store.get("library");
 });
 
 async function createWindow() {

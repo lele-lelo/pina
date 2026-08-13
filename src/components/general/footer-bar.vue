@@ -3,6 +3,10 @@ import { Dialog } from "quasar";
 import { computed } from "vue";
 import SettingsDialog from "../settings/settings-dialog.vue";
 import { TButton } from "@/types/global.js";
+import { useUserStore } from "@/stores/user-store.js";
+
+// Composables
+const userStore = useUserStore();
 
 // Refs
 const navigationOptions = computed<TButton[]>(() => {
@@ -12,7 +16,9 @@ const navigationOptions = computed<TButton[]>(() => {
       icon: "mdi-upload",
       color: "blue",
       async clickFn() {
-        await window.romActions.addFile();
+        const res = await window.romActions.addFile();
+        userStore.roms = res.entries;
+        userStore.gameMetadatas = res.gameMetadata;
       }
     },
     {

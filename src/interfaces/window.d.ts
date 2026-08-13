@@ -1,3 +1,5 @@
+import { TGameMetadata, TRomEntry } from "@/types/rom";
+
 export {};
 
 declare global {
@@ -13,7 +15,10 @@ declare global {
       set: (key: string, value: unknown) => Promise<boolean>;
     };
     romActions: {
-      addFile: () => Promise<void>;
+      addFile: () => Promise<{
+        entries: TRomEntry[];
+        gameMetadata: TGameMetadata[];
+      }>;
     };
   }
 }

@@ -23,13 +23,13 @@ const metadata = computed(() => {
 </script>
 
 <template>
-  <q-list class="column q-gutter-y-md">
+  <q-list class="column q-gutter-y-sm">
     <div>
       <q-item-label caption>Chemin du fichier : </q-item-label>
       <q-item-label>{{ rom.path }}</q-item-label>
     </div>
 
-    <div class="row q-gutter-x-xl">
+    <div class="row q-gutter-x-xl q-gutter-y-sm">
       <div>
         <q-item-label caption>Console : </q-item-label>
         <div style="width: 70px">
@@ -48,6 +48,20 @@ const metadata = computed(() => {
         <q-item-label>
           <region-flag v-if="metadata?.region" :region="metadata?.region" />
           {{ metadata?.region ?? "-" }}
+        </q-item-label>
+      </div>
+
+      <div>
+        <q-item-label caption>Genre : </q-item-label>
+        <q-item-label>
+          {{ metadata?.genre ?? "-" }}
+        </q-item-label>
+      </div>
+
+      <div>
+        <q-item-label caption>Editeur : </q-item-label>
+        <q-item-label>
+          {{ metadata?.publisher ?? "-" }}
         </q-item-label>
       </div>
     </div>

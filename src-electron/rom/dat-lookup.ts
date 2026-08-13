@@ -1,17 +1,19 @@
+import { readFileSync } from "fs";
 import { getVendorPath } from "../vendor-path";
-import { parseDat, TDatEntry } from "./dat-parser";
+import { TMergedEntry } from "../../scripts/dat-merger";
 
-let gbaDatCache: ReturnType<typeof parseDat> | null = null;
+let gbaDatCache: TMergedEntry[] | null = null;
 
 function getGbaDat() {
   if (!gbaDatCache) {
-    const datPath = getVendorPath("dat", "gba.dat");
-    gbaDatCache = parseDat(datPath);
+    const jsonPath = getVendorPath("dat", "gba.json");
+    gbaDatCache = JSON.parse(readFileSync(jsonPath, "utf-8"));
   }
   return gbaDatCache;
 }
 
-export function lookupGbaByCrc(crc: string): TDatEntry | undefined {
-  const dat = getGbaDat();
-  return dat.find(entry => entry.crc.toLowerCase() === crc.toLowerCase());
+export function lookupGbaByCrc(crc: string) {
+  return getGbaDat()?.find(
+    entry => entry.crc.toLowerCase() === crc.toLowerCase()
+  );
 }
