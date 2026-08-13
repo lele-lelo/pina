@@ -3,7 +3,7 @@ import { useUserStore } from "@/stores/user-store";
 import { TRomEntry } from "@/types/rom";
 import { romHelper } from "@/utils/helpers/romHelper";
 import { Dark } from "quasar";
-import { computed } from "vue";
+import { computed, ref } from "vue";
 
 // Types
 type TProps = {
@@ -13,6 +13,9 @@ type TProps = {
 // Props
 const props = defineProps<TProps>();
 
+// Models
+const model = defineModel<string>();
+
 // Composables
 const userStore = useUserStore();
 
@@ -20,14 +23,25 @@ const userStore = useUserStore();
 const metadata = computed(() => {
   return userStore.gameMetadatas.find(gm => gm.gameId === props.rom.gameId);
 });
+
+// Functions
+function onClick() {
+  if (model.value === props.rom.entryId) {
+    model.value = "";
+  } else {
+    model.value = props.rom.entryId;
+  }
+}
 </script>
 
 <template>
   <q-item
     dense
     clickable
-    class="rom-item items-center"
-    active-class="text-primary"
+    class="rom-item items-center rounded-borders"
+    active-class="bg-primary "
+    :active="model === rom.entryId"
+    @click="onClick"
   >
     <q-item-section avatar class="rom-item__cover">
       <q-img
@@ -65,6 +79,10 @@ const metadata = computed(() => {
 .rom-item {
   height: 100px;
   overflow: hidden;
+
+  &:hover {
+    color: var(--q-primary);
+  }
 
   &__cover {
     width: 100px;

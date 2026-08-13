@@ -8,7 +8,7 @@ const userStore = useUserStore();
 
 <template>
   <q-page class="flex q-pa-sm">
-    <q-list class="col">
+    <q-list class="col" dense>
       <rom-button v-for="(rom, i) in userStore.roms" :key="i" :rom="rom" />
     </q-list>
   </q-page>
