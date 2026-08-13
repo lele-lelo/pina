@@ -2,6 +2,7 @@
 import { type Component, computed, ref } from "vue";
 import { QTabs, useDialogPluginComponent } from "quasar";
 import InterfaceForm from "./forms/interface-form.vue";
+import RomsForm from "./forms/roms-form.vue";
 
 // Types
 type TOptionTabGroup = {
@@ -26,6 +27,7 @@ const TABS: TOptionTabGroup[] = [
   {
     name: "Général",
     tabs: [
+      { name: "Roms", icon: "mdi-zip-disk", content: RomsForm },
       { name: "Interface", icon: "mdi-monitor-shimmer", content: InterfaceForm }
     ]
   }
@@ -56,7 +58,7 @@ function onWheel(e: WheelEvent) {
   <q-dialog
     ref="dialogRef"
     @hide="onDialogHide"
-    backdrop-filter="blur(4px)"
+    backdrop-filter="blur(10px)"
     full-height
     full-width
   >
@@ -77,6 +79,7 @@ function onWheel(e: WheelEvent) {
           dense
           indicator-color="transparent"
           active-color="primary"
+          active-class="text-bold"
           @wheel="onWheel"
         >
           <div
@@ -96,7 +99,7 @@ function onWheel(e: WheelEvent) {
               <div
                 class="justify-start full-width row items-center q-gutter-x-sm"
               >
-                <q-icon :name="tabOption.icon" />
+                <q-icon size="xs" :name="tabOption.icon" />
 
                 <div>
                   {{ tabOption.name }}

@@ -2,25 +2,17 @@
 import { Dialog } from "quasar";
 import { computed } from "vue";
 import SettingsDialog from "../settings/settings-dialog.vue";
-
-// Types
-type TNavigationOption = {
-  label: string;
-  color: string;
-  icon: string;
-  clickFn?: () => void | Promise<void>;
-};
+import { TButton } from "@/types/global.js";
 
 // Refs
-const navigationOptions = computed<TNavigationOption[]>(() => {
+const navigationOptions = computed<TButton[]>(() => {
   return [
     {
       label: "Charger une ROM",
       icon: "mdi-upload",
       color: "blue",
       async clickFn() {
-        const res = await window.romActions.addFile();
-        console.log(res);
+        await window.romActions.addFile();
       }
     },
     {

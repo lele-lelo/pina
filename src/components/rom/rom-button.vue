@@ -4,6 +4,7 @@ import { TRomEntry } from "@/types/rom";
 import { romHelper } from "@/utils/helpers/romHelper";
 import { Dark } from "quasar";
 import { computed, ref } from "vue";
+import RegionFlag from "./region-flag.vue";
 
 // Types
 type TProps = {
@@ -64,13 +65,14 @@ function onClick() {
     <q-item-section side class="column justify-evenly full-height">
       <div class="rom-item__console">
         <q-img
+          v-if="metadata?.console"
           :src="`/consoles/${metadata?.console}-${Dark.isActive ? 'dark' : 'light'}.svg`"
           fit="contain"
           style="width: 100%; height: 100%"
         />
       </div>
 
-      <div class="fi fi-fr"></div>
+      <region-flag v-if="metadata?.region" :region="metadata?.region" />
     </q-item-section>
   </q-item>
 </template>
