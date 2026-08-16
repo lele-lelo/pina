@@ -15,11 +15,11 @@ import {
 } from "#q-app/electron/main";
 import { store } from "./electron-store";
 import { computeRomId } from "./rom/rom-id";
-import { TGameMetadata, TRomEntry } from "@/types/rom";
-import { lookupGbaByCrc } from "./rom/dat-lookup";
+import { TRomEntry } from "@/types/rom";
+import { lookupGbaByName } from "./rom/dat-lookup";
 import { randomUUID } from "node:crypto";
-import { downloadCover } from "./rom/cover-fetcher";
 import { pathToFileURL } from "node:url";
+import { loadGameMetadata, updateEntryGame } from "./rom/rom-helpers";
 
 // needed in case process is undefined under Linux
 const platform = process.platform || os.platform();
@@ -73,39 +73,36 @@ ipcMain.handle("rom-add-file", async () => {
     return null;
   }
 
-  const allMetadata = store.get("library.gameMetadata", []) as TGameMetadata[];
-  let metadata = allMetadata.find(m => m.gameId === gameId);
-  if (!metadata) {
-    const datEntry = lookupGbaByCrc(gameId);
-
-    const coverPath = await downloadCover(gameId, "gba", datEntry?.name ?? "");
-
-    if (datEntry) {
-      metadata = {
-        gameId,
-        name: datEntry?.name,
-        console: "gba",
-        region: datEntry?.region,
-        genre: datEntry?.genre,
-        publisher: datEntry?.publisher,
-        hasCover: !!coverPath
-      };
-
-      store.set("library.gameMetadata", [...allMetadata, metadata]);
-    }
-  }
+  const gameFound = await loadGameMetadata(gameId);
 
   const newEntry: TRomEntry = {
     entryId: randomUUID(),
-    gameId: gameId,
+    gameId: gameFound ? gameId : null,
     path: filePath,
     name: basename(filePath, extname(filePath))
   };
 
   store.set("library.entries", [...entries, newEntry]);
 
-  return store.get("library");
+  return { library: store.get("library"), newEntryId: newEntry.entryId };
 });
+
+ipcMain.handle("search-game", (_, filter: string) => {
+  const games = lookupGbaByName(filter)?.map(g => {
+    return { ...g, gameId: g.crc };
+  });
+
+  return games;
+});
+
+ipcMain.handle(
+  "update-entry-game",
+  async (_, entryId: string, gameId: string) => {
+    await updateEntryGame(entryId, gameId);
+
+    return store.get("library");
+  }
+);
 
 async function createWindow() {
   /**

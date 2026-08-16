@@ -22,10 +22,10 @@ const metadata = computed(() => {
 </script>
 
 <template>
-  <q-item dense class="col row q-gutter-x-sm">
+  <div dense class="col row q-gutter-x-sm">
     <div class="row justify-center" style="width: 60px">
       <q-img
-        v-if="metadata"
+        v-if="rom.gameId"
         :src="romHelper.getCoverUrl(rom.gameId)"
         fit="contain"
         style="width: 60px; height: 60px"
@@ -40,5 +40,5 @@ const metadata = computed(() => {
         >Jeu non trouvé</q-item-label
       >
     </q-item-section>
-  </q-item>
+  </div>
 </template>

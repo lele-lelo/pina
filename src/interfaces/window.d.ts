@@ -16,9 +16,17 @@ declare global {
     };
     romActions: {
       addFile: () => Promise<{
-        entries: TRomEntry[];
-        gameMetadata: TGameMetadata[];
+        library: {
+          entries: TRomEntry[];
+          gameMetadata: TGameMetadata[];
+        };
+        newEntryId: string;
       }>;
+      searchGame: (filter: string) => Promise<TGameMetadata[]>;
+      updateEntryGame: (
+        entryId: string,
+        gameId: string
+      ) => Promise<{ entries: TRomEntry[]; gameMetadata: TGameMetadata[] }>;
     };
   }
 }

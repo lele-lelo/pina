@@ -17,3 +17,9 @@ export function lookupGbaByCrc(crc: string) {
     entry => entry.crc.toLowerCase() === crc.toLowerCase()
   );
 }
+
+export function lookupGbaByName(name: string) {
+  return getGbaDat()?.filter(entry =>
+    entry.name.toLowerCase().includes(name.toLowerCase())
+  );
+}

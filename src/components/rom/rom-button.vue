@@ -44,22 +44,27 @@ function onClick() {
     :active="model === rom.entryId"
     @click="onClick"
   >
-    <q-item-section avatar class="rom-item__cover">
+    <div avatar class="rom-item__cover row justify-center q-pa-sm items-center">
       <q-img
+        v-if="rom.gameId"
         :src="romHelper.getCoverUrl(rom.gameId)"
         fit="contain"
         style="width: 100%; height: 100%"
       />
-    </q-item-section>
+      <q-icon v-else size="md" name="error" color="red" />
+    </div>
 
     <q-item-section class="column justify-evenly full-height">
       <q-item-label class="text-bold ellipsis">
         {{ rom.name }}
       </q-item-label>
 
-      <q-item-label class="ellipsis" caption>
-        {{ metadata?.name }}
-      </q-item-label>
+      <q-item-label v-if="metadata" caption class="ellipsis">{{
+        metadata.name
+      }}</q-item-label>
+      <q-item-label v-else caption class="text-red"
+        >Jeu non trouvé</q-item-label
+      >
     </q-item-section>
 
     <q-item-section side class="column justify-evenly full-height">

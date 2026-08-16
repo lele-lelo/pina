@@ -27,7 +27,7 @@ const TABS: TOptionTabGroup[] = [
   {
     name: "Général",
     tabs: [
-      { name: "Roms", icon: "mdi-zip-disk", content: RomsForm },
+      { name: "Roms", icon: "mdi-content-save-all", content: RomsForm },
       { name: "Interface", icon: "mdi-monitor-shimmer", content: InterfaceForm }
     ]
   }

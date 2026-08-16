@@ -1,6 +1,6 @@
 export type TRomEntry = {
   entryId: string;
-  gameId: string;
+  gameId?: string | null;
   path: string;
   name: string;
 };

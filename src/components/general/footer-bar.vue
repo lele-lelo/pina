@@ -4,6 +4,8 @@ import { computed } from "vue";
 import SettingsDialog from "../settings/settings-dialog.vue";
 import { TButton } from "@/types/global.js";
 import { useUserStore } from "@/stores/user-store.js";
+import GameSelectDialog from "../rom/game-select-dialog.vue";
+import { stringify } from "querystring";
 
 // Composables
 const userStore = useUserStore();
@@ -17,8 +19,21 @@ const navigationOptions = computed<TButton[]>(() => {
       color: "blue",
       async clickFn() {
         const res = await window.romActions.addFile();
-        userStore.roms = res.entries;
-        userStore.gameMetadatas = res.gameMetadata;
+        userStore.roms = res.library.entries;
+        userStore.gameMetadatas = res.library.gameMetadata;
+
+        const newEntry = res.library.entries.find(
+          e => e.entryId === res.newEntryId
+        );
+
+        if (!newEntry?.gameId) {
+          Dialog.create({
+            component: GameSelectDialog,
+            componentProps: {
+              romId: res.newEntryId
+            }
+          });
+        }
       }
     },
     {

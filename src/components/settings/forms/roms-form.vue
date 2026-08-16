@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import GameSelectDialog from "@/components/rom/game-select-dialog.vue";
 import RomInfoList from "@/components/rom/rom-info-list.vue";
 import RomItem from "@/components/rom/rom-item.vue";
 import { useUserStore } from "@/stores/user-store";
 import type { TButton } from "@/types/global";
+import { Dialog } from "quasar";
 
 // Composables
 const userStore = useUserStore();
@@ -10,9 +12,17 @@ const userStore = useUserStore();
 // Consts
 const ACTIONS: TButton[] = [
   {
-    label: "Supprimer la rom",
-    color: "red",
-    icon: "close"
+    label: "Selectionner un jeu",
+    color: "blue",
+    icon: "mdi-content-save-edit",
+    clickFn(romId: string) {
+      Dialog.create({
+        component: GameSelectDialog,
+        componentProps: {
+          romId: romId
+        }
+      });
+    }
   }
 ];
 </script>
@@ -42,7 +52,11 @@ const ACTIONS: TButton[] = [
               class="q-mb-sm"
               :color="action.color"
               :icon="action.icon"
-              @click="action.clickFn"
+              @click="
+                () => {
+                  if (action?.clickFn) action.clickFn(rom.entryId);
+                }
+              "
             >
               <q-tooltip :class="`bg-${action.color}-6`">{{
                 action.label
