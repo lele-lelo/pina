@@ -4,6 +4,7 @@ import { useDialogPluginComponent } from "quasar";
 import { ref } from "vue";
 import RegionFlag from "./region-flag.vue";
 import { useUserStore } from "@/stores/user-store.js";
+import GenreBadge from "./genre-badge.vue";
 
 // Types
 type TProps = {
@@ -39,6 +40,7 @@ async function onFilter(
         name: g.name,
         region: g.region,
         publisher: g.publisher,
+        genre: g.genre,
         console: "gba",
         hasCover: true
       };
@@ -91,7 +93,11 @@ async function selectGame() {
                   {{ game.region }}
                 </q-item-label>
 
-                <q-item-label v-if="game?.publisher" caption lines="3">
+                <q-item-label v-if="game?.genre" caption lines="3">
+                  <genre-badge :genre="game.genre" />
+                </q-item-label>
+
+                <q-item-label v-if="game?.publisher" caption lines="4">
                   {{ game.publisher }}
                 </q-item-label>
               </q-item-section>
@@ -113,7 +119,11 @@ async function selectGame() {
                   {{ opt.region }}
                 </q-item-label>
 
-                <q-item-label v-if="opt.publisher" caption lines="3">
+                <q-item-label v-if="opt.genre" caption lines="3">
+                  <genre-badge :genre="opt.genre" />
+                </q-item-label>
+
+                <q-item-label v-if="opt.publisher" caption lines="4">
                   {{ opt.publisher }}
                 </q-item-label>
               </q-item-section>

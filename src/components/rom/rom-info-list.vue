@@ -4,6 +4,7 @@ import type { TRomEntry } from "@/types/rom";
 import { Dark } from "quasar";
 import { computed } from "vue";
 import RegionFlag from "./region-flag.vue";
+import GenreBadge from "./genre-badge.vue";
 
 // Types
 type TProps = {
@@ -54,7 +55,8 @@ const metadata = computed(() => {
       <div>
         <q-item-label caption>Genre : </q-item-label>
         <q-item-label>
-          {{ metadata?.genre ?? "-" }}
+          <genre-badge v-if="metadata?.genre" :genre="metadata.genre" />
+          <div v-else>-</div>
         </q-item-label>
       </div>
 

@@ -19,6 +19,8 @@ export function lookupGbaByCrc(crc: string) {
 }
 
 export function lookupGbaByName(name: string) {
+  console.log(new Set(getGbaDat()?.map(e => e.genre)));
+
   return getGbaDat()?.filter(entry =>
     entry.name.toLowerCase().includes(name.toLowerCase())
   );
