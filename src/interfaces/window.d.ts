@@ -1,4 +1,4 @@
-import { TGameMetadata, TRomEntry } from "@/types/rom";
+import { TGameMetadata, TIgdbGame, TRomEntry } from "@/types/rom";
 
 export {};
 
@@ -22,7 +22,7 @@ declare global {
         };
         newEntryId: string;
       }>;
-      searchGame: (filter: string) => Promise<TGameMetadata[]>;
+      searchGame: (query: string) => Promise<TIgdbGame[]>;
       updateEntryGame: (
         entryId: string,
         gameId: string

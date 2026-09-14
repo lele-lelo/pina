@@ -45,7 +45,7 @@ contextBridge.exposeInMainWorld("appConfig", {
 
 contextBridge.exposeInMainWorld("romActions", {
   addFile: () => ipcRenderer.invoke("rom-add-file"),
-  searchGame: (filter: string) => ipcRenderer.invoke("search-game", filter),
+  searchGame: (query: string) => ipcRenderer.invoke("search-game", query),
   updateEntryGame: (entryId: string, gameId: string) =>
     ipcRenderer.invoke("update-entry-game", entryId, gameId)
 });

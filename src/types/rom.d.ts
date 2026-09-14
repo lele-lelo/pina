@@ -14,3 +14,14 @@ export type TGameMetadata = {
   genre?: string | undefined;
   publisher?: string | undefined;
 };
+
+export type TIgdbGame = {
+  id: number;
+  name: string;
+  summary?: string;
+  firest_release_date?: number;
+  cover?: { image_id: string };
+  genres?: { name: string }[];
+  platforms?: { name: string }[];
+  alternative_names?: { name: string }[];
+};

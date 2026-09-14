@@ -1,3 +1,4 @@
+import "dotenv/config";
 import {
   BrowserWindow,
   Menu,
@@ -16,10 +17,10 @@ import {
 import { store } from "./electron-store";
 import { computeRomId } from "./rom/rom-id";
 import { TRomEntry } from "@/types/rom";
-import { lookupGbaByName } from "./rom/dat-lookup";
 import { randomUUID } from "node:crypto";
 import { pathToFileURL } from "node:url";
 import { loadGameMetadata, updateEntryGame } from "./rom/rom-helpers";
+import { searchIgdbGames } from "./igdb/igdb-client";
 
 // needed in case process is undefined under Linux
 const platform = process.platform || os.platform();
@@ -87,12 +88,13 @@ ipcMain.handle("rom-add-file", async () => {
   return { library: store.get("library"), newEntryId: newEntry.entryId };
 });
 
-ipcMain.handle("search-game", (_, filter: string) => {
-  const games = lookupGbaByName(filter)?.map(g => {
-    return { ...g, gameId: g.crc };
-  });
-
-  return games;
+ipcMain.handle("search-game", async (_, query: string) => {
+  try {
+    return await searchIgdbGames(query);
+  } catch (err) {
+    console.error("Erreur recherche IGDB :", err);
+    return [];
+  }
 });
 
 ipcMain.handle(
