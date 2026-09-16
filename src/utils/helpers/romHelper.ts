@@ -1,6 +1,6 @@
-export const romHelper = {
-  getCoverUrl(gameId: string) {
-    return `app-cover://${gameId}.png`;
+  export const romHelper = {
+  getCoverUrl(igdbId: string) {
+    return `app-cover://${igdbId}.png`;
   },
   getRegionInfo(region: string) {
     const infos: { name: string; class: string }[] = [
@@ -24,48 +24,35 @@ export const romHelper = {
       infos.find(i => i.name === region) || { name: "unknown", class: "xx" }
     );
   },
-  getGenreInfo(genre: string) {
-    const infos: { name: string; icon: string; color: string }[] = [
-      { name: "Role-playing (RPG)", icon: "mdi-sword", color: "green" },
-      { name: "Shooter", icon: "mdi-crosshairs-gps", color: "green" },
-      { name: "Sports", icon: "mdi-basketball", color: "green" },
-      {
-        name: "Compilation",
-        icon: "mdi-bookmark-box-multiple",
-        color: "green"
-      },
-      { name: "Racing", icon: "mdi-car-sports", color: "green" },
-      { name: "Action", icon: "mdi-movie-open", color: "green" },
-      { name: "Various", icon: "mdi-diversify", color: "green" },
-      { name: "Adventure", icon: "mdi-map", color: "green" },
-      { name: "Platform", icon: "mdi-shoe-sneaker", color: "green" },
-      { name: "Beat'em Up", icon: "mdi-boxing-glove", color: "green" },
-      { name: "Strategy", icon: "mdi-strategy", color: "green" },
-      { name: "Fighting", icon: "mdi-karate", color: "green" },
-      { name: "Simulation", icon: "mdi-sprout", color: "green" },
-      { name: "Hunting and Fishing", icon: "mdi-fish", color: "green" },
-      { name: "Music / Dancing", icon: "mdi-music", color: "green" },
-      { name: "Board", icon: "mdi-checkerboard", color: "green" },
-      { name: "Puzzle", icon: "mdi-puzzle", color: "green" },
-      { name: "Shoot'em Up", icon: "mdi-pistol", color: "green" },
-      { name: "Casual Game", icon: "mdi-crowd", color: "green" },
-      { name: "Gambling", icon: "mdi-cards-playing-spade", color: "green" },
-      { name: "Card", icon: "mdi-cards", color: "green" },
-      { name: "Quiz", icon: "mdi-tooltip-question", color: "green" },
-      {
-        name: "Sports with Animals",
-        icon: "mdi-horse-variant",
-        color: "green"
-      },
-      { name: "Educational", icon: "mdi-school", color: "green" },
-      { name: "Pinball", icon: "mdi-arcade", color: 'green' }
-    ];
-
-    // 'Pinball',
-    // 'Thinking'
+  getGenreInfo(genreId: number) {
+    const infos: { id: number; icon: string; color: string }[] = [
+      { id: 2, icon: 'mdi-cursor-default-click', color: 'cyan'}, // Point and Click
+      { id: 4, icon: 'mdi-mixed-martial-arts', color: 'red'}, // Fighting
+      { id: 5, icon: 'mdi-pistol', color: 'orange'}, // Shooter
+      { id: 7, icon: 'mdi-music', color: 'purple'}, // Music
+      { id: 8, icon: 'mdi-run', color: 'yellow'}, // Platformer
+      { id: 9, icon: 'mdi-puzzle', color: 'light-blue'}, // Puzzle
+      { id: 10, icon: 'mdi-car-sports', color: 'deep-orange'}, // Racing
+      { id: 11, icon: 'mdi-map-clock', color: 'teal'}, // RTS
+      { id: 12, icon: 'mdi-sword', color: 'lime'}, // RPG
+      { id: 13, icon: 'mdi-sprout', color: 'light-green'}, // Simulation
+      { id: 14, icon: 'mdi-basketball', color: 'orange'}, // Sport
+      { id: 15, icon: 'mdi-strategy', color: 'blue'}, // Stategie
+      { id: 16, icon: 'mdi-checkerboard', color: 'teal'}, // TBS
+      { id: 24, icon: 'mdi-strategy', color: 'red'}, // Tactical
+      { id: 25, icon: 'mdi-ammunition', color: 'purple'}, // Hack and slash/Beat 'em up
+      { id: 26, icon: 'mdi-tooltip-question', color: 'pink'}, // Quiz
+      { id: 30, icon: 'mdi-crystal-ball', color: 'deep-purple'}, // Pinball
+      { id: 31, icon: 'mdi-script-text', color: 'yellow'}, // Adventure
+      { id: 32, icon: 'mdi-heart-half-full', color: 'pink'}, // Indie
+      { id: 33, icon: 'mdi-space-invaders', color: 'deep-purple'}, // Arcade
+      { id: 34, icon: 'mdi-book-open-variant-outline', color: 'cyan'}, // Visual Novel
+      { id: 35, icon: 'mdi-cards-playing', color: 'red'}, // Card & Board Game
+      { id: 36, icon: 'mdi-stadium', color: 'lime'} // MOBA
+    ]
 
     return (
-      infos.find(i => i.name === genre) || {
+      infos.find(i => i.id === genreId) || {
         name: "unknown",
         icon: "help",
         color: "grey"

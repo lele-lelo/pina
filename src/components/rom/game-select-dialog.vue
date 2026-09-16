@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import { TGameMetadata } from "@/types/rom";
-import { useDialogPluginComponent } from "quasar";
-import { ref } from "vue";
-import RegionFlag from "./region-flag.vue";
+import { TIgdbGame } from "@/types/rom";
+import { QSelect, useDialogPluginComponent } from "quasar";
+import { ref, toRaw } from "vue";
 import { useUserStore } from "@/stores/user-store.js";
-import GenreBadge from "./genre-badge.vue";
 
 // Types
 type TProps = {
   romId: string;
+  gameId: string;
 };
 
 // Props
@@ -23,8 +22,8 @@ const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
 const userStore = useUserStore();
 
 // Refs
-const game = ref<TGameMetadata>();
-const options = ref<TGameMetadata[]>([]);
+const game = ref<TIgdbGame>();
+const options = ref<TIgdbGame[]>([]);
 
 // Functions
 async function onFilter(
@@ -36,23 +35,24 @@ async function onFilter(
   update(() => {
     options.value = games.map(g => {
       return {
-        gameId: g.gameId,
+        id: g.id,
         name: g.name,
-        region: g.region,
-        publisher: g.publisher,
-        genre: g.genre,
-        console: "gba",
-        hasCover: true
+        summary: g.summary || "",
+        storyline: g.storyline || "",
+        genres: g.genres || [],
+        cover: g.cover
       };
     });
   });
 }
 
 async function selectGame() {
-  if (game.value?.gameId) {
+  if (game.value?.id) {
+    const igdbData = JSON.parse(JSON.stringify(toRaw(game.value))) as TIgdbGame;
     const res = await window.romActions.updateEntryGame(
       props.romId,
-      game.value.gameId
+      props.gameId,
+      igdbData
     );
     userStore.roms = res.entries;
     userStore.gameMetadatas = res.gameMetadata;
@@ -71,7 +71,7 @@ async function selectGame() {
       <q-card-section class="column items-center justify-center">
         <q-select
           v-model="game"
-          filled
+          outlined
           use-input
           color="primary"
           autofocus
@@ -79,57 +79,9 @@ async function selectGame() {
           class="full-width"
           emit-value
           :options="options"
+          option-label="name"
           @filter="onFilter"
         >
-          <template #selected-item>
-            <q-item dense class="full-width q-px-none">
-              <q-item-section>
-                <q-item-label>
-                  {{ game?.name }}
-                </q-item-label>
-
-                <q-item-label v-if="game?.region" caption lines="2">
-                  <region-flag :region="game.region" />
-                  {{ game.region }}
-                </q-item-label>
-
-                <q-item-label v-if="game?.genre" caption lines="3">
-                  <genre-badge :genre="game.genre" />
-                </q-item-label>
-
-                <q-item-label v-if="game?.publisher" caption lines="4">
-                  {{ game.publisher }}
-                </q-item-label>
-              </q-item-section>
-            </q-item>
-          </template>
-
-          <template #option="{ opt, toggleOption }">
-            <q-item
-              clickable
-              :active="game?.gameId === opt.gameId"
-              :disable="game?.gameId === opt.gameId"
-              @click="() => toggleOption(opt)"
-            >
-              <q-item-section>
-                <q-item-label> {{ opt.name }} </q-item-label>
-
-                <q-item-label v-if="opt.region" caption lines="2">
-                  <region-flag :region="opt.region" />
-                  {{ opt.region }}
-                </q-item-label>
-
-                <q-item-label v-if="opt.genre" caption lines="3">
-                  <genre-badge :genre="opt.genre" />
-                </q-item-label>
-
-                <q-item-label v-if="opt.publisher" caption lines="4">
-                  {{ opt.publisher }}
-                </q-item-label>
-              </q-item-section>
-            </q-item>
-          </template>
-
           <template #no-option>
             <q-item>
               <q-item-section>
@@ -156,7 +108,7 @@ async function selectGame() {
           color="primary"
           label="Selectionner"
           no-caps
-          :disable="!game?.gameId"
+          :disable="!game?.id"
           @click="selectGame"
         />
       </q-card-actions>

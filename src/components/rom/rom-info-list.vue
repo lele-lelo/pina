@@ -18,8 +18,8 @@ const props = defineProps<TProps>();
 const userStore = useUserStore();
 
 // Computeds
-const metadata = computed(() => {
-  return userStore.gameMetadatas.find(gm => gm.gameId === props.rom.gameId);
+const romInfo = computed(() => {
+  return userStore.getRom(props.rom.entryId);
 });
 </script>
 
@@ -30,13 +30,13 @@ const metadata = computed(() => {
       <q-item-label>{{ rom.path }}</q-item-label>
     </div>
 
-    <div class="row q-gutter-x-xl q-gutter-y-sm">
+    <div class="row q-gutter-x-xl">
       <div>
         <q-item-label caption>Console : </q-item-label>
         <div style="width: 70px">
           <q-img
-            v-if="metadata?.console"
-            :src="`/consoles/${metadata?.console}-${Dark.isActive ? 'dark' : 'light'}.svg`"
+            v-if="romInfo?.gameMetadata?.console"
+            :src="`/consoles/${romInfo.gameMetadata?.console}-${Dark.isActive ? 'dark' : 'light'}.svg`"
             fit="contain"
             style="width: 100%; height: 100%"
           />
@@ -47,25 +47,28 @@ const metadata = computed(() => {
       <div>
         <q-item-label caption>Région : </q-item-label>
         <q-item-label>
-          <region-flag v-if="metadata?.region" :region="metadata?.region" />
-          {{ metadata?.region ?? "-" }}
+          <region-flag v-if="romInfo?.gameMetadata?.region" :region="romInfo.gameMetadata?.region" />
+          {{ romInfo?.gameMetadata?.region ?? "-" }}
         </q-item-label>
       </div>
 
       <div>
-        <q-item-label caption>Genre : </q-item-label>
+        <q-item-label caption>Date de sortie : </q-item-label>
         <q-item-label>
-          <genre-badge v-if="metadata?.genre" :genre="metadata.genre" />
-          <div v-else>-</div>
-        </q-item-label>
-      </div>
-
-      <div>
-        <q-item-label caption>Editeur : </q-item-label>
-        <q-item-label>
-          {{ metadata?.publisher ?? "-" }}
+          {{ romInfo?.igdbData?.firest_release_date ?? "-" }}
         </q-item-label>
       </div>
     </div>
+
+    <div>
+      <q-item-label caption>Genres : </q-item-label>
+      <q-item-label>
+        <span v-if="romInfo?.igdbData?.genres && romInfo?.igdbData?.genres?.length > 0" class="q-gutter-x-sm">
+          <genre-badge v-for="genre in romInfo?.igdbData?.genres" :genre="genre" :key="genre.id" />
+        </span>
+      </q-item-label>
+    </div>
+
+    <!-- <pre>{{ romInfo }}</pre> -->
   </q-list>
 </template>

@@ -16,7 +16,7 @@ import {
 } from "#q-app/electron/main";
 import { store } from "./electron-store";
 import { computeRomId } from "./rom/rom-id";
-import { TRomEntry } from "@/types/rom";
+import { TIgdbGame, TRomEntry } from "@/types/rom";
 import { randomUUID } from "node:crypto";
 import { pathToFileURL } from "node:url";
 import { loadGameMetadata, updateEntryGame } from "./rom/rom-helpers";
@@ -74,18 +74,22 @@ ipcMain.handle("rom-add-file", async () => {
     return null;
   }
 
-  const gameFound = await loadGameMetadata(gameId);
+  await loadGameMetadata(gameId);
 
   const newEntry: TRomEntry = {
     entryId: randomUUID(),
-    gameId: gameFound ? gameId : null,
+    gameId: gameId,
     path: filePath,
     name: basename(filePath, extname(filePath))
   };
 
   store.set("library.entries", [...entries, newEntry]);
 
-  return { library: store.get("library"), newEntryId: newEntry.entryId };
+  return {
+    library: store.get("library"),
+    newEntryId: newEntry.entryId,
+    newGameId: newEntry.gameId
+  };
 });
 
 ipcMain.handle("search-game", async (_, query: string) => {
@@ -99,8 +103,8 @@ ipcMain.handle("search-game", async (_, query: string) => {
 
 ipcMain.handle(
   "update-entry-game",
-  async (_, entryId: string, gameId: string) => {
-    await updateEntryGame(entryId, gameId);
+  async (_, entryId: string, gameId: string, igdbData: TIgdbGame) => {
+    await updateEntryGame(entryId, gameId, igdbData);
 
     return store.get("library");
   }

@@ -5,6 +5,7 @@ import RomItem from "@/components/rom/rom-item.vue";
 import { useUserStore } from "@/stores/user-store";
 import type { TButton } from "@/types/global";
 import { Dialog } from "quasar";
+import { TRomEntry } from "@/types/rom";
 
 // Composables
 const userStore = useUserStore();
@@ -15,11 +16,12 @@ const ACTIONS: TButton[] = [
     label: "Selectionner un jeu",
     color: "blue",
     icon: "mdi-content-save-edit",
-    clickFn(romId: string) {
+    clickFn(rom: TRomEntry) {
       Dialog.create({
         component: GameSelectDialog,
         componentProps: {
-          romId: romId
+          romId: rom.entryId,
+          gameId: rom.gameId
         }
       });
     }

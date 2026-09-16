@@ -19,14 +19,17 @@ declare global {
         library: {
           entries: TRomEntry[];
           gameMetadata: TGameMetadata[];
+          igdbDatas: TIgdbGame[]
         };
         newEntryId: string;
+        newGameId: string;
       }>;
       searchGame: (query: string) => Promise<TIgdbGame[]>;
       updateEntryGame: (
         entryId: string,
-        gameId: string
-      ) => Promise<{ entries: TRomEntry[]; gameMetadata: TGameMetadata[] }>;
+        gameId: string,
+        igdbData: TIgdbGame
+      ) => Promise<{ entries: TRomEntry[]; gameMetadata: TGameMetadata[]; igdbDatas: TIgdbGame[]}>;
     };
   }
 }

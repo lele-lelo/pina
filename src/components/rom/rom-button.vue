@@ -21,8 +21,8 @@ const model = defineModel<string>();
 const userStore = useUserStore();
 
 // Computeds
-const metadata = computed(() => {
-  return userStore.gameMetadatas.find(gm => gm.gameId === props.rom.gameId);
+const romInfo = computed(() => {
+  return userStore.getRom(props.rom.entryId);
 });
 
 // Functions
@@ -46,8 +46,8 @@ function onClick() {
   >
     <div avatar class="rom-item__cover row justify-center q-pa-sm items-center">
       <q-img
-        v-if="rom.gameId"
-        :src="romHelper.getCoverUrl(rom.gameId)"
+        v-if="romInfo?.igdbData?.id"
+        :src="romHelper.getCoverUrl(romInfo.igdbData.id)"
         fit="contain"
         style="width: 100%; height: 100%"
       />
@@ -59,8 +59,8 @@ function onClick() {
         {{ rom.name }}
       </q-item-label>
 
-      <q-item-label v-if="metadata" caption class="ellipsis">{{
-        metadata.name
+      <q-item-label v-if="romInfo?.gameMetadata" caption class="ellipsis">{{
+        romInfo?.gameMetadata.name
       }}</q-item-label>
       <q-item-label v-else caption class="text-red"
         >Jeu non trouvé</q-item-label
@@ -70,14 +70,14 @@ function onClick() {
     <q-item-section side class="column justify-evenly full-height">
       <div class="rom-item__console">
         <q-img
-          v-if="metadata?.console"
-          :src="`/consoles/${metadata?.console}-${Dark.isActive ? 'dark' : 'light'}.svg`"
+          v-if="romInfo?.gameMetadata?.console"
+          :src="`/consoles/${romInfo?.gameMetadata?.console}-${Dark.isActive ? 'dark' : 'light'}.svg`"
           fit="contain"
           style="width: 100%; height: 100%"
         />
       </div>
 
-      <region-flag v-if="metadata?.region" :region="metadata?.region" />
+      <region-flag v-if="romInfo?.gameMetadata?.region" :region="romInfo?.gameMetadata?.region" />
     </q-item-section>
   </q-item>
 </template>

@@ -1,4 +1,4 @@
-import { TGameMetadata, TRomEntry } from "@/types/rom";
+import { TGameMetadata, TIgdbGame, TRomEntry } from "@/types/rom";
 import { TTheme, type TThemeColor } from "@/types/settings";
 import { THEME_COLOR_OPTIONS } from "@/utils/constants/settings";
 import { defineStore } from "pinia";
@@ -27,6 +27,8 @@ export const useUserStore = defineStore("user", () => {
   const roms = ref<TRomEntry[]>([]);
 
   const gameMetadatas = ref<TGameMetadata[]>([]);
+
+  const igdbDatas = ref<TIgdbGame[]>([])
 
   // Functions
   /** Fonctions qui met à jour le theme
@@ -82,6 +84,20 @@ export const useUserStore = defineStore("user", () => {
     gameMetadatas.value =
       (await window.appConfig.get<TGameMetadata[]>("library.gameMetadata")) ||
       [];
+
+    // IgdbDatas
+    igdbDatas.value = (await window.appConfig.get<TIgdbGame[]>('library.igdbDatas')) || []
+  }
+
+  function getRom(romId: string) {
+    const rom = roms.value.find(r => r.entryId === romId)
+
+    if(rom) {
+      const gameMetadata = gameMetadatas.value.find(gm => gm.gameId === rom.gameId)
+      const igdbData = igdbDatas.value.find(igdb => igdb.id === gameMetadata?.igdbId)
+
+      return {...rom, gameMetadata, igdbData}
+    }
   }
 
   return {
@@ -90,8 +106,10 @@ export const useUserStore = defineStore("user", () => {
     isThemeColorRandom,
     roms,
     gameMetadatas,
+    igdbDatas,
     setTheme,
     setThemeColor,
-    initStore
+    initStore,
+    getRom
   };
 });

@@ -1,4 +1,4 @@
-import { TGameMetadata, TRomEntry } from "@/types/rom";
+import { TGameMetadata, TIgdbGame, TRomEntry } from "@/types/rom";
 import type { TTheme, TThemeColor } from "@/types/settings";
 import Store from "electron-store";
 
@@ -10,6 +10,7 @@ export interface IStoreConfig {
   library: {
     entries: TRomEntry[];
     gameMetadata: TGameMetadata[];
+    igdbDatas: TIgdbGame[];
   };
 }
 
@@ -21,7 +22,8 @@ export const store = new Store<IStoreConfig>({
     },
     library: {
       entries: [],
-      gameMetadata: []
+      gameMetadata: [],
+      igdbDatas: []
     }
   }
 });

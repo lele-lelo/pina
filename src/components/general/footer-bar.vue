@@ -5,7 +5,6 @@ import SettingsDialog from "../settings/settings-dialog.vue";
 import { TButton } from "@/types/global.js";
 import { useUserStore } from "@/stores/user-store.js";
 import GameSelectDialog from "../rom/game-select-dialog.vue";
-import { stringify } from "querystring";
 
 // Composables
 const userStore = useUserStore();
@@ -22,15 +21,16 @@ const navigationOptions = computed<TButton[]>(() => {
         userStore.roms = res.library.entries;
         userStore.gameMetadatas = res.library.gameMetadata;
 
-        const newEntry = res.library.entries.find(
-          e => e.entryId === res.newEntryId
+        const newGame = res.library.gameMetadata.find(
+          g => g.gameId === res.newGameId
         );
 
-        if (!newEntry?.gameId) {
+        if (!newGame?.igdbId) {
           Dialog.create({
             component: GameSelectDialog,
             componentProps: {
-              romId: res.newEntryId
+              romId: res.newEntryId,
+              gameId: res.newGameId
             }
           });
         }

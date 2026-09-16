@@ -24,6 +24,7 @@
 
 import { contextBridge, ipcRenderer } from "electron";
 import { quasarRuntime } from "#q-app/electron/preload";
+import { TIgdbGame } from "@/types/rom";
 
 /**
  * Can be used in the renderer process through `window.quasarRuntime`
@@ -46,6 +47,6 @@ contextBridge.exposeInMainWorld("appConfig", {
 contextBridge.exposeInMainWorld("romActions", {
   addFile: () => ipcRenderer.invoke("rom-add-file"),
   searchGame: (query: string) => ipcRenderer.invoke("search-game", query),
-  updateEntryGame: (entryId: string, gameId: string) =>
-    ipcRenderer.invoke("update-entry-game", entryId, gameId)
+  updateEntryGame: (entryId: string, gameId: string, igdbData: TIgdbGame) =>
+    ipcRenderer.invoke("update-entry-game", entryId, gameId, igdbData)
 });
